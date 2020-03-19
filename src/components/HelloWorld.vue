@@ -1,15 +1,15 @@
 <template>
   <div class="hello">
     <h1>Inference</h1>
-    <img src="@/assets/cat.jpg" ref="img1" @load="getImage" />
+    <img src="@/assets/cheese3.jpg" ref="img1" @load="getImage" />
   </div>
 </template>
 
 <script>
 import * as tf from "@tensorflow/tfjs";
 
-const MODEL_URL = "/models/catdog/model.json";
-//const classNames = ["cat", "dog"];
+const MODEL_URL = "/models/cheese/model.json";
+//const className = ["cat", "dog"];
 export default {
   name: "HelloWorld",
   data() {
@@ -24,11 +24,10 @@ export default {
 
       let tensor = tf.browser
         .fromPixels(image1, 3)
-        .resizeNearestNeighbor([160, 160]) // change the image size
+        .resizeNearestNeighbor([224, 224]) // change the image size
         .expandDims()
         .toFloat()
         .reverse(-1);
-      console.log(tensor);
       this.loadModel(tensor);
     },
     async loadModel(tensor) {
@@ -39,7 +38,6 @@ export default {
     async startInference(tensor, model) {
       //step 3, inference
       let prediction = await model.predict(tensor).data();
-
       console.log(prediction);
       let classification = Array.from(prediction)
         .map(function(p, i) {
