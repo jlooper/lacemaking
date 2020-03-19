@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <h1>Inference</h1>
-    <img src="@/assets/cheese3.jpg" ref="img1" @load="getImage" />
+    <img src="@/assets/cheese2.jpg" ref="img1" @load="getImage" />
   </div>
 </template>
 
@@ -9,14 +9,8 @@
 import * as tf from "@tensorflow/tfjs";
 
 const MODEL_URL = "/models/cheese/model.json";
-//const className = ["cat", "dog"];
 export default {
   name: "HelloWorld",
-  data() {
-    return {
-      //model: MODEL_URL
-    };
-  },
   methods: {
     getImage() {
       //step 1, get the image
@@ -24,7 +18,7 @@ export default {
 
       let tensor = tf.browser
         .fromPixels(image1, 3)
-        .resizeNearestNeighbor([224, 224]) // change the image size
+        .resizeNearestNeighbor([224, 224]) // be sure to change the image size
         .expandDims()
         .toFloat()
         .reverse(-1);
@@ -38,7 +32,8 @@ export default {
     async startInference(tensor, model) {
       //step 3, inference
       let prediction = await model.predict(tensor).data();
-      console.log(prediction);
+      console.log("prediction", prediction);
+      //bug: probability is always '1'?
       let classification = Array.from(prediction)
         .map(function(p, i) {
           return {
@@ -56,7 +51,7 @@ export default {
       //step 4 - classify
       console.log(classification);
       classification.forEach(function(p) {
-        console.log(p);
+        console.log("probability", p);
       });
     }
   }
