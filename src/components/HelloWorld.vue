@@ -1,13 +1,20 @@
 <template>
   <div class="hello">
     <h1>Inference</h1>
-    <img src="@/assets/cheese2.jpg" ref="img1" @load="getImage" />
+    <img src="@/assets/cheese6.jpg" ref="img1" @load="getImage" />
   </div>
 </template>
 
 <script>
 import * as tf from "@tensorflow/tfjs";
-
+const CLASS_NAMES = [
+  "semi-soft",
+  "blue",
+  "washed-rind",
+  "hard",
+  "bloomy",
+  "fresh"
+];
 const MODEL_URL = "/models/cheese/model.json";
 export default {
   name: "HelloWorld",
@@ -38,7 +45,7 @@ export default {
         .map(function(p, i) {
           return {
             probability: p,
-            className: prediction[i]
+            className: CLASS_NAMES[i]
           };
         })
         .sort(function(a, b) {
