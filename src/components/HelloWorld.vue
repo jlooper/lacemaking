@@ -1,21 +1,24 @@
 <template>
   <div class="hello">
     <h1>Inference</h1>
-    <img src="@/assets/cheese6.jpg" ref="img1" @load="getImage" />
+    <img src="@/assets/flower5.jpg" ref="img1" @load="getImage" />
   </div>
 </template>
 
 <script>
 import * as tf from "@tensorflow/tfjs";
-const CLASS_NAMES = [
+/*const CLASS_NAMES = [
   "semi-soft",
   "blue",
   "washed-rind",
   "hard",
   "bloomy",
   "fresh"
-];
-const MODEL_URL = "/models/cheese/model.json";
+];*/
+//
+const CLASS_NAMES = ["yax", "muyal", "nah"];
+
+const MODEL_URL = "/models/glyphs/model.json";
 export default {
   name: "HelloWorld",
   methods: {
@@ -25,7 +28,7 @@ export default {
 
       let tensor = tf.browser
         .fromPixels(image1, 3)
-        .resizeNearestNeighbor([224, 224]) // be sure to change the image size
+        .resizeNearestNeighbor([150, 150]) // be sure to change the image size
         .expandDims()
         .toFloat()
         .reverse(-1);
@@ -42,13 +45,13 @@ export default {
       console.log("prediction", prediction);
       //bug: probability is always '1'?
       let classification = Array.from(prediction)
-        .map(function(p, i) {
+        .map(function (p, i) {
           return {
             probability: p,
-            className: CLASS_NAMES[i]
+            className: CLASS_NAMES[i],
           };
         })
-        .sort(function(a, b) {
+        .sort(function (a, b) {
           return b.probability - a.probability;
         })
         .slice(0, 1);
@@ -57,11 +60,11 @@ export default {
     showPrediction(classification) {
       //step 4 - classify
       console.log(classification);
-      classification.forEach(function(p) {
+      classification.forEach(function (p) {
         console.log("probability", p);
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
