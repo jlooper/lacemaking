@@ -53,20 +53,21 @@ export default {
       this.image = output;
     },
     predictImage() {
-      /*axios({
+      var data = JSON.stringify({
+        inputs: {
+          Image: this.image,
+        },
+      });
+      axios({
         method: "post",
         url:
           "http://localhost:38100/predict/dfcf37f4-6d77-46c0-be7f-86dc9c45efd9",
-        data: JSON.stringify({
-          inputs: {
-            Image: this.image,
-          },
-        }),
+        data: data,
       }).then(function (response) {
         console.log(response);
-      });*/
+      });
 
-      var data = JSON.stringify({
+      /*var data = JSON.stringify({
         inputs: {
           Image: this.image,
         },
@@ -86,7 +87,7 @@ export default {
         "http://localhost:38100/predict/dfcf37f4-6d77-46c0-be7f-86dc9c45efd9"
       );
 
-      xhr.send(data);
+      xhr.send(data);*/
     },
   },
 };
