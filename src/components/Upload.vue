@@ -32,6 +32,9 @@
         </label>
       </image-uploader>
     </div>
+    <div>
+      <h2 v-if="prediction != ''">Prediction: {{ prediction }}</h2>
+    </div>
   </div>
 </template>
 
@@ -45,49 +48,30 @@ export default {
       msg: "Vue Image Upload and Resize Demo",
       hasImage: false,
       image: null,
+      prediction: "",
     };
   },
   methods: {
     setImage(output) {
       this.hasImage = true;
-      this.image = output;
+      var base64result = output.split(",")[1];
+      this.image = base64result;
     },
-    predictImage() {
+    async predictImage() {
       var data = JSON.stringify({
         inputs: {
           Image: this.image,
         },
       });
-      axios({
+      await axios({
         method: "post",
         url:
           "http://localhost:38100/predict/dfcf37f4-6d77-46c0-be7f-86dc9c45efd9",
         data: data,
-      }).then(function (response) {
-        console.log(response);
+      }).then((response) => {
+        console.log(response.data.outputs.Prediction[0]);
+        this.prediction = response.data.outputs.Prediction[0];
       });
-
-      /*var data = JSON.stringify({
-        inputs: {
-          Image: this.image,
-        },
-      });
-
-      var xhr = new XMLHttpRequest();
-      xhr.withCredentials = true;
-
-      xhr.addEventListener("readystatechange", function () {
-        if (this.readyState === this.DONE) {
-          console.log(this.responseText);
-        }
-      });
-
-      xhr.open(
-        "POST",
-        "http://localhost:38100/predict/dfcf37f4-6d77-46c0-be7f-86dc9c45efd9"
-      );
-
-      xhr.send(data);*/
     },
   },
 };
