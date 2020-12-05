@@ -1,15 +1,15 @@
 <template>
   <div id="app">
-    <Upload />
+    <LocalAPI />
   </div>
 </template>
 
 <script>
-import Upload from "./components/Upload.vue";
+import LocalAPI from "./components/LocalAPI.vue";
 export default {
   name: "App",
   components: {
-    Upload,
+    LocalAPI,
   },
 };
 </script>
