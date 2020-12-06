@@ -1,15 +1,15 @@
 <template>
   <div id="app">
-    <LocalAPI />
+    <Graph />
   </div>
 </template>
 
 <script>
-import LocalAPI from "./components/LocalAPI.vue";
+import Graph from "./components/Graph.vue";
 export default {
   name: "App",
   components: {
-    LocalAPI,
+    Graph,
   },
 };
 </script>
