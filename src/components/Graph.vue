@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <h1>Inference</h1>
-    <img src="@/assets/cheese5.jpg" ref="img1" @load="getImage" />
+    <img src="@/assets/cheese6.jpg" ref="img1" @load="getImage" />
     <div>
       <h2 v-if="prediction != ''">Prediction: {{ prediction }}</h2>
     </div>
@@ -10,15 +10,7 @@
 
 <script>
 import * as tf from "@tensorflow/tfjs";
-const CLASS_NAMES = [
-  "bloomy",
-  "blue",
-  "fresh",
-  "hard",
-  "semi-soft",
-  "washed-rind",
-];
-
+import sig from "@/assets/signature.json";
 const MODEL_URL = "/models/cheese/model.json";
 
 export default {
@@ -26,51 +18,77 @@ export default {
   data() {
     return {
       prediction: "",
+      model: "",
+      outputKey: "Labels",
+      classes: sig.classes.Label,
+      shape: sig.inputs.Image.shape.slice(1, 3),
+      inputName: sig.inputs.Image.name,
     };
   },
   methods: {
     getImage() {
       //step 1, get the image
-      const image1 = this.$refs.img1;
-
-      let tensor = tf.browser
-        .fromPixels(image1, 3)
-        .resizeNearestNeighbor([224, 224]) // be sure to change the image size
-        .expandDims()
-        .toFloat()
-        .reverse(-1);
-      this.loadModel(tensor);
+      const image = this.$refs.img1;
+      let imageTensor = tf.browser.fromPixels(image, 3);
+      //todo crop image
+      this.loadModel(imageTensor);
     },
-    async loadModel(tensor) {
+    async loadModel(imageTensor) {
       //step 2, load model, start inference
-      let model = await tf.loadGraphModel(MODEL_URL);
-      this.startInference(tensor, model);
-      console.log(tensor, model);
+      this.model = await tf.loadGraphModel(MODEL_URL);
+      this.predict(imageTensor);
     },
-    async startInference(tensor, model) {
-      //step 3, inference
-      let prediction = await model.predict(tensor).data();
-      console.log("prediction", prediction);
 
-      let classification = Array.from(prediction)
-        .map(function (p, i) {
-          return {
-            probability: p,
-            className: CLASS_NAMES[i],
-          };
-        })
-        .sort(function (a, b) {
-          return b.probability - a.probability;
-        })
-        .slice(0, 1);
-      this.showPrediction(classification);
+    dispose() {
+      if (this.model) {
+        this.model.dispose();
+      }
+    },
+
+    predict(image) {
+      if (this.model) {
+        const [imgHeight, imgWidth] = image.shape.slice(0, 2);
+        // convert image to 0-1
+        const normalizedImage = tf.div(image, tf.scalar(255));
+        let norm = normalizedImage.reshape([1, ...normalizedImage.shape]);
+        //const reshapedImage = tf.tensor4d(norm, "float32");
+        const reshapedImage = norm;
+        // center crop and resize
+        let top = 0;
+        let left = 0;
+        let bottom = 1;
+        let right = 1;
+        if (imgHeight != imgWidth) {
+          const size = Math.min(imgHeight, imgWidth);
+          left = (imgWidth - size) / 2 / imgWidth;
+          top = (imgHeight - size) / 2 / imgHeight;
+          right = (imgWidth + size) / 2 / imgWidth;
+          bottom = (imgHeight + size) / 2 / imgHeight;
+        }
+        const croppedImage = tf.image.cropAndResize(
+          reshapedImage,
+          [[top, left, bottom, right]],
+          [0],
+          [this.shape[0], this.shape[1]]
+        );
+        const results = this.model.execute(
+          { [this.inputName]: croppedImage },
+          sig.outputs[this.outputKey].name
+        );
+        const resultsArray = results.dataSync();
+        this.showPrediction(resultsArray);
+      } else {
+        console.error("Model not loaded, please await this.load() first.");
+      }
     },
     showPrediction(classification) {
       //step 4 - classify
-      //console.log(classification);
-      classification.forEach(function (p) {
-        console.log(p);
-      });
+      console.log(classification);
+      for (var i = 0; i < classification.length; i++) {
+        if (classification[i] == 1) {
+          this.prediction = this.classes[i];
+        }
+      }
     },
   },
 };
