@@ -43,7 +43,7 @@ export default {
       //step 3, inference
       let prediction = await model.predict(tensor).data();
       console.log("prediction", prediction);
-      //bug: probability is always '1'?
+      
       let classification = Array.from(prediction)
         .map(function (p, i) {
           return {
