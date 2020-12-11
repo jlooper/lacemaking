@@ -1,8 +1,8 @@
 <template>
   <div class="hello">
     <h1>Inference</h1>
-    <img :src="preview" ref="img1" @load="getImage"/>
-     <div class="my-8">
+    <img :src="preview" ref="img1" @load="getImage" />
+    <div class="my-8">
       <image-uploader
         :preview="false"
         :className="['fileinput', { 'fileinput--loaded': hasImage }]"
@@ -12,7 +12,6 @@
         :autoRotate="true"
         outputFormat="string"
         @input="setImage"
-        
       >
         <label for="fileInput" slot="upload-label">
           <figure>
@@ -35,15 +34,14 @@
       </image-uploader>
     </div>
     <div>
-      <h2 v-if="prediction != ''"> 
-
-        <span v-for="p in prediction" :key=p.id>
-          {{p.class}} {{p.probability}}<br/>
+      <h2 v-if="prediction != ''">
+        <span v-for="p in prediction" :key="p.id">
+          {{ p.class }} {{ p.probability }}<br />
         </span>
-          
       </h2>
       <h2 v-else>
-        <span v-if="hasImage">Calculating...</span></h2>
+        <span v-if="hasImage">Calculating...</span>
+      </h2>
     </div>
   </div>
 </template>
@@ -51,10 +49,10 @@
 <script>
 import * as tf from "@tensorflow/tfjs";
 import signature from "@/assets/signature.json";
-const MODEL_URL = "/models/cheese/model.json";
+const MODEL_URL = "/models/lace/model.json";
 
 export default {
-  name: "HelloWorld",
+  name: "Inference",
   data() {
     return {
       prediction: "",
@@ -62,7 +60,7 @@ export default {
       preview: "",
       hasImage: false,
       image: null,
-      outputKey: "Labels",
+      outputKey: "Confidences",
       classes: signature.classes.Label,
       shape: signature.inputs.Image.shape.slice(1, 3),
       inputName: signature.inputs.Image.name,
@@ -73,12 +71,13 @@ export default {
       this.prediction = "";
       this.hasImage = true;
       this.preview = output;
-      
     },
     getImage() {
       //step 1, get the image
       const image = this.$refs.img1;
+
       let imageTensor = tf.browser.fromPixels(image, 3);
+      console.log(imageTensor);
       this.loadModel(imageTensor);
     },
     async loadModel(imageTensor) {
@@ -118,6 +117,7 @@ export default {
           [0],
           [this.shape[0], this.shape[1]]
         );
+
         const results = this.model.execute(
           { [this.inputName]: croppedImage },
           signature.outputs[this.outputKey].name
@@ -130,21 +130,18 @@ export default {
     },
     showPrediction(classification) {
       //step 4 - classify
-      let classes = Array.from(this.classes)
-      let predictions = Array.from(classification)
-        .map(function (p, i) {
-          return {
-            id: i,
-            probability: Math.floor(p * 100) + '%',
-            class: classes[i],
-          };
-        })
-        
-        
-        this.prediction = predictions;
-        //stop the model inference
-        this.dispose()
-        
+      let classes = Array.from(this.classes);
+      let predictions = Array.from(classification).map(function (p, i) {
+        return {
+          id: i,
+          probability: Math.floor(p * 100) + "%",
+          class: classes[i],
+        };
+      });
+
+      this.prediction = predictions;
+      //stop the model inference
+      this.dispose();
     },
   },
 };

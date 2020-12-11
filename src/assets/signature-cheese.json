@@ -1,0 +1,18 @@
+{
+	"doc_id": "dfcf37f4-6d77-46c0-be7f-86dc9c45efd9",
+	"doc_name": "Cheese",
+	"doc_version": "ee4274bd97cd284944bb52b11d985e1d",
+	"format": "tf_js",
+	"version": 33,
+	"inputs": { "Image": { "dtype": "float32", "shape": [null, 224, 224, 3], "name": "Image:0" } },
+	"outputs": {
+		"Labels": {
+			"dtype": "float32",
+			"shape": [null, 6],
+			"name": "925069ee-1dc2-4f66-8e19-7f0efbb0174d/dense_2/Softmax:0"
+		}
+	},
+	"tags": null,
+	"classes": { "Label": ["bloomy", "blue", "fresh", "hard", "semi-soft", "washed-rind"] },
+	"filename": "model.json"
+}
