@@ -1,8 +1,8 @@
 <template>
   <div>
     <h1>Lace Inference</h1>
-    <img :src="preview" ref="img1" @load="getImage" />
-    <div class="my-8">
+    <img :alt="alt" :src="preview" ref="img1" @load="getImage" />
+    <div class="uploader">
       <image-uploader
         :preview="false"
         :className="['fileinput', { 'fileinput--loaded': hasImage }]"
@@ -59,6 +59,7 @@ export default {
       model: "",
       preview: "",
       hasImage: false,
+      alt: "",
       image: null,
       outputKey: "Confidences",
       classes: signature.classes.Label,
@@ -147,7 +148,6 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 #fileInput {
   display: none;
@@ -164,10 +164,7 @@ li {
   display: inline-block;
   margin: 0 10px;
 }
-a {
-  color: #42b983;
-}
-.my-8 {
+.uploader {
   margin-top: 4rem;
   margin-bottom: 4rem;
 }
