@@ -1,26 +1,19 @@
 <template>
-  <div class="hello">
-    <h1>Inference</h1>
+  <div>
+    <h1>Flower Inference</h1>
     <img src="@/assets/flower5.jpg" ref="img1" @load="getImage" />
   </div>
 </template>
 
 <script>
+//NB: this file is used for inference from a model created using the TFJS converter from a Keras file, and uses the Layers API
 import * as tf from "@tensorflow/tfjs";
-/*const CLASS_NAMES = [
-  "semi-soft",
-  "blue",
-  "washed-rind",
-  "hard",
-  "bloomy",
-  "fresh"
-];*/
-//
+
 const CLASS_NAMES = ["daisy", "rose", "sunflower", "dandelion", "tulip"];
 
 const MODEL_URL = "/models/flowers/model.json";
 export default {
-  name: "HelloWorld",
+  name: "Layers",
   methods: {
     getImage() {
       //step 1, get the image
@@ -43,7 +36,7 @@ export default {
       //step 3, inference
       let prediction = await model.predict(tensor).data();
       console.log("prediction", prediction);
-      
+
       let classification = Array.from(prediction)
         .map(function (p, i) {
           return {

@@ -1,6 +1,6 @@
 <template>
-  <div class="hello">
-    <h1>Inference</h1>
+  <div>
+    <h1>Lace Inference</h1>
     <img :src="preview" ref="img1" @load="getImage" />
     <div class="my-8">
       <image-uploader
@@ -52,7 +52,7 @@ import signature from "@/assets/signature.json";
 const MODEL_URL = "/models/lace/model.json";
 
 export default {
-  name: "Inference",
+  name: "Graph",
   data() {
     return {
       prediction: "",

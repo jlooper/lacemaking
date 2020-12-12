@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div>
     <div class="my-8">
       <image-uploader
         :preview="true"
@@ -39,10 +39,11 @@
 </template>
 
 <script>
+//NB use this technique if you want to have Lobe running locally and get inference via this web app
 import axios from "axios";
 
 export default {
-  name: "Upload",
+  name: "Local",
   data() {
     return {
       msg: "Vue Image Upload and Resize Demo",
