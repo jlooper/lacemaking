@@ -9,7 +9,6 @@
 	},
 	"dependencies": {
 		"@tensorflow/tfjs": "^2.4.0",
-		"@tensorflow/tfjs-node": "^2.7.0",
 		"vue-image-upload-resize": "2.2.1",
 		"axios": "^0.20.0",
 		"core-js": "^3.6.5",
